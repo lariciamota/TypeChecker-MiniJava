@@ -66,6 +66,13 @@ public class BuildSymbolTableVisitor implements IVisitor<Void> {
 	// Identifier i1,i2;
 	// Statement s;
 	public Void visit(MainClass n) {
+		//add class using id1 -> currClass
+		symbolTable.addClass(n.i1.toString(), null);
+		this.currClass = symbolTable.getClass(n.i1.toString());
+		//add method using id2 as param -> currMethod
+		currClass.addMethod("Main", null);
+		this.currMethod = currClass.getMethod("Main");
+		currMethod.addParam(n.i2.toString(), new IntArrayType());
 		n.i1.accept(this);
 		n.i2.accept(this);
 		n.s.accept(this);
@@ -76,6 +83,13 @@ public class BuildSymbolTableVisitor implements IVisitor<Void> {
 	// VarDeclList vl;
 	// MethodDeclList ml;
 	public Void visit(ClassDeclSimple n) {
+		//add class checking if it already exists
+		if(symbolTable.containsClass(n.i.toString())){
+			System.out.println("Class already exists");
+			System.exit(0);
+		}
+		symbolTable.addClass(n.i.toString(), null);
+		this.currClass = symbolTable.getClass(n.i.toString());
 		n.i.accept(this);
 		for (int i = 0; i < n.vl.size(); i++) {
 			n.vl.elementAt(i).accept(this);
@@ -91,6 +105,19 @@ public class BuildSymbolTableVisitor implements IVisitor<Void> {
 	// VarDeclList vl;
 	// MethodDeclList ml;
 	public Void visit(ClassDeclExtends n) {
+		//add class parent (extends)
+		if(!symbolTable.containsClass(n.j.toString())){
+			symbolTable.addClass(n.j.toString(), null);
+		} 
+		this.currClass = symbolTable.getClass(n.j.toString());
+		
+		//add class checking if it already exists
+		if(symbolTable.containsClass(n.i.toString())){
+			System.out.println("Class already exists");
+			System.exit(0);
+		}
+		symbolTable.addClass(n.i.toString(), currClass.getId());
+		this.currClass = symbolTable.getClass(n.i.toString());
 		n.i.accept(this);
 		n.j.accept(this);
 		for (int i = 0; i < n.vl.size(); i++) {
