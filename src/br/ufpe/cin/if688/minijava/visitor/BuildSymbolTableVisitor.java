@@ -129,6 +129,15 @@ public class BuildSymbolTableVisitor implements IVisitor<Void> {
 	// Type t;
 	// Identifier i;
 	public Void visit(VarDecl n) {
+		//add var checking if it is global or local
+		if(this.currClass.containsVar(n.i.toString())){
+			this.currClass.addVar(n.i.toString(), n.t);
+		} else if(this.currMethod.containsVar(n.i.toString())){
+			this.currMethod.addVar(n.i.toString(), n.t);
+		} else {
+			System.out.println("Variable already exists");
+			System.exit(0);
+		}
 		n.t.accept(this);
 		n.i.accept(this);
 		return null;
@@ -141,6 +150,12 @@ public class BuildSymbolTableVisitor implements IVisitor<Void> {
 	// StatementList sl;
 	// Exp e;
 	public Void visit(MethodDecl n) {
+		if(this.currClass.containsMethod(n.i.toString())){
+			System.out.println("Method already exists");
+			System.exit(0);
+		}
+		this.currClass.addMethod(n.i.toString(), n.t);
+		
 		n.t.accept(this);
 		n.i.accept(this);
 		for (int i = 0; i < n.fl.size(); i++) {
