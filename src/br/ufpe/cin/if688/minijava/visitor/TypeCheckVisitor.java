@@ -160,7 +160,12 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	// Exp e;
 	// Statement s1,s2;
 	public Type visit(If n) {
-		n.e.accept(this);
+		Type t = n.e.accept(this);
+		Type b = new BooleanType();
+		if (!this.symbolTable.compareTypes(t, b)) {
+			System.err.println("Erro: operando não booleano");
+			System.exit(0);
+		}
 		n.s1.accept(this);
 		n.s2.accept(this);
 		return null;
@@ -169,9 +174,14 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	// Exp e;
 	// Statement s;
 	public Type visit(While n) {
-		n.e.accept(this);
+		Type t = n.e.accept(this);
+		Type b = new BooleanType();
+		if (!this.symbolTable.compareTypes(t, b)) {
+			System.err.println("Erro: operando não booleano");
+			System.exit(0);
+		}
 		n.s.accept(this);
-		return null;
+		return b;
 	}
 
 	// Exp e;
@@ -202,7 +212,7 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 		Type t1 = n.e1.accept(this);
 		Type t2 = n.e2.accept(this);
 		Type b = new BooleanType();
-		if (!(this.symbolTable.compareTypes(t1, b) && this.symbolTable.compareTypes(t1, b))) {
+		if (!(this.symbolTable.compareTypes(t1, b) && this.symbolTable.compareTypes(t2, b))) {
 			System.err.println("Erro: operando não booleano");
 			System.exit(0);
 		}
@@ -223,23 +233,38 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 
 	// Exp e1,e2;
 	public Type visit(Plus n) {
-		n.e1.accept(this);
-		n.e2.accept(this);
-		return null;
+		Type t1 = n.e1.accept(this);
+		Type t2 = n.e2.accept(this);
+		Type i = new IntegerType();
+		if (!(this.symbolTable.compareTypes(t1, i) && this.symbolTable.compareTypes(t2, i))) {	
+			System.err.println("Erro: operando não inteiro");
+			System.exit(0);
+		}
+		return new BooleanType();	
 	}
 
 	// Exp e1,e2;
 	public Type visit(Minus n) {
-		n.e1.accept(this);
-		n.e2.accept(this);
-		return null;
+		Type t1 = n.e1.accept(this);
+		Type t2 = n.e2.accept(this);
+		Type i = new IntegerType();
+		if (!(this.symbolTable.compareTypes(t1, i) && this.symbolTable.compareTypes(t2, i))) {	
+			System.err.println("Erro: operando não inteiro");
+			System.exit(0);
+		}
+		return new BooleanType();	
 	}
 
 	// Exp e1,e2;
 	public Type visit(Times n) {
-		n.e1.accept(this);
-		n.e2.accept(this);
-		return null;
+		Type t1 = n.e1.accept(this);
+		Type t2 = n.e2.accept(this);
+		Type i = new IntegerType();
+		if (!(this.symbolTable.compareTypes(t1, i) && this.symbolTable.compareTypes(t2, i))) {	
+			System.err.println("Erro: operando não inteiro");
+			System.exit(0);
+		}
+		return new BooleanType();	
 	}
 
 	// Exp e1,e2;
@@ -251,8 +276,13 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 
 	// Exp e;
 	public Type visit(ArrayLength n) {
-		n.e.accept(this);
-		return null;
+		Type t = n.e.accept(this);
+		Type i = new IntegerType();
+		if (!this.symbolTable.compareTypes(t,i)) {
+			System.err.println("Erro: tipo inteiro não encontrado");
+			System.exit(0);
+		}
+		return i;
 	}
 
 	// Exp e;
@@ -269,15 +299,15 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 
 	// int i;
 	public Type visit(IntegerLiteral n) {
-		return null;
+		return new IntegerType();
 	}
 
 	public Type visit(True n) {
-		return null;
+		return new BooleanType();
 	}
 
 	public Type visit(False n) {
-		return null;
+		return new BooleanType();
 	}
 
 	// String s;
@@ -302,8 +332,13 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 
 	// Exp e;
 	public Type visit(Not n) {
-		n.e.accept(this);
-		return null;
+		Type t = n.e.accept(this);
+		Type b = new BooleanType();
+		if(! this.symbolTable.compareTypes(t, b)) {
+			System.err.println("Erro: operando não booleano");
+			System.exit(0);
+		}
+		return b;
 	}
 
 	// String s;
