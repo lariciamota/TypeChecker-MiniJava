@@ -199,16 +199,26 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 
 	// Exp e1,e2;
 	public Type visit(And n) {
-		n.e1.accept(this);
-		n.e2.accept(this);
-		return null;
+		Type t1 = n.e1.accept(this);
+		Type t2 = n.e2.accept(this);
+		Type b = new BooleanType();
+		if (!(this.symbolTable.compareTypes(t1, b) && this.symbolTable.compareTypes(t1, b))) {
+			System.err.println("Erro: operando não booleano");
+			System.exit(0);
+		}
+		return b;
 	}
 
 	// Exp e1,e2;
 	public Type visit(LessThan n) {
-		n.e1.accept(this);
-		n.e2.accept(this);
-		return null;
+		Type t1 = n.e1.accept(this);
+		Type t2 = n.e2.accept(this);
+		Type i = new IntegerType();
+		if (!(this.symbolTable.compareTypes(t1, i) && this.symbolTable.compareTypes(t2, i))) {	
+			System.err.println("Erro: operando não inteiro");
+			System.exit(0);
+		}
+		return new BooleanType();			
 	}
 
 	// Exp e1,e2;
