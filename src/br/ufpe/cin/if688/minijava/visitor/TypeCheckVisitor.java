@@ -48,7 +48,6 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	// MainClass m;
 	// ClassDeclList cl;
 	public Type visit(Program n) {
-		// #TODO
 		n.m.accept(this);
 		for (int i = 0; i < n.cl.size(); i++) {
 			n.cl.elementAt(i).accept(this);
@@ -59,7 +58,6 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	// Identifier i1,i2;
 	// Statement s;
 	public Type visit(MainClass n) {
-		// #TODO
 		n.i1.accept(this);
 		n.i2.accept(this);
 		n.s.accept(this);
@@ -70,7 +68,6 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	// VarDeclList vl;
 	// MethodDeclList ml;
 	public Type visit(ClassDeclSimple n) {
-		// #TODO
 		n.i.accept(this);
 		for (int i = 0; i < n.vl.size(); i++) {
 			n.vl.elementAt(i).accept(this);
@@ -86,7 +83,6 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	// VarDeclList vl;
 	// MethodDeclList ml;
 	public Type visit(ClassDeclExtends n) {
-		// #TODO
 		n.i.accept(this);
 		n.j.accept(this);
 		for (int i = 0; i < n.vl.size(); i++) {
@@ -101,7 +97,6 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	// Type t;
 	// Identifier i;
 	public Type visit(VarDecl n) {
-		// #TODO
 		n.t.accept(this);
 		n.i.accept(this);
 		return null;
@@ -114,7 +109,6 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	// StatementList sl;
 	// Exp e;
 	public Type visit(MethodDecl n) {
-		// #TODO
 		n.t.accept(this);
 		n.i.accept(this);
 		for (int i = 0; i < n.fl.size(); i++) {
@@ -133,7 +127,6 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	// Type t;
 	// Identifier i;
 	public Type visit(Formal n) {
-		// #TODO
 		n.t.accept(this);
 		n.i.accept(this);
 		return null;
