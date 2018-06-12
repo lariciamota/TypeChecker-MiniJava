@@ -255,7 +255,7 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 			System.err.println("Erro: operando não inteiro");
 			System.exit(0);
 		}
-		return new BooleanType();	
+		return new IntegerType();	
 	}
 
 	// Exp e1,e2;
@@ -267,7 +267,7 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 			System.err.println("Erro: operando não inteiro");
 			System.exit(0);
 		}
-		return new BooleanType();	
+		return new IntegerType();	
 	}
 
 	// Exp e1,e2;
@@ -279,7 +279,7 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 			System.err.println("Erro: operando não inteiro");
 			System.exit(0);
 		}
-		return new BooleanType();	
+		return new IntegerType();	
 	}
 
 	// Exp e1,e2;
