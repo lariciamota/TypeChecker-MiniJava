@@ -284,10 +284,19 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 
 	// Exp e1,e2;
 	public Type visit(ArrayLookup n) {
-		// #TODO
-		n.e1.accept(this);
-		n.e2.accept(this);
-		return null;
+		Type t = n.e1.accept(this);
+		Type id = new IdentifierType();
+		if (!this.symbolTable.compareTypes(t,id)) {
+			System.err.println("Erro: tipo identificador não encontrado");
+			System.exit(0);
+		}
+		Type ty = n.e2.accept(this);
+		Type i = new IntegerType();
+		if (!this.symbolTable.compareTypes(ty,i)) {
+			System.err.println("Erro: tipo inteiro não encontrado");
+			System.exit(0);
+		}
+		return new IntegerType();
 	}
 
 	// Exp e;
