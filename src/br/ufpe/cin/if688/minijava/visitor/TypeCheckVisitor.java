@@ -48,6 +48,7 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	// MainClass m;
 	// ClassDeclList cl;
 	public Type visit(Program n) {
+		// #TODO
 		n.m.accept(this);
 		for (int i = 0; i < n.cl.size(); i++) {
 			n.cl.elementAt(i).accept(this);
@@ -58,6 +59,7 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	// Identifier i1,i2;
 	// Statement s;
 	public Type visit(MainClass n) {
+		// #TODO
 		n.i1.accept(this);
 		n.i2.accept(this);
 		n.s.accept(this);
@@ -68,6 +70,7 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	// VarDeclList vl;
 	// MethodDeclList ml;
 	public Type visit(ClassDeclSimple n) {
+		// #TODO
 		n.i.accept(this);
 		for (int i = 0; i < n.vl.size(); i++) {
 			n.vl.elementAt(i).accept(this);
@@ -83,6 +86,7 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	// VarDeclList vl;
 	// MethodDeclList ml;
 	public Type visit(ClassDeclExtends n) {
+		// #TODO
 		n.i.accept(this);
 		n.j.accept(this);
 		for (int i = 0; i < n.vl.size(); i++) {
@@ -97,6 +101,7 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	// Type t;
 	// Identifier i;
 	public Type visit(VarDecl n) {
+		// #TODO
 		n.t.accept(this);
 		n.i.accept(this);
 		return null;
@@ -109,6 +114,7 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	// StatementList sl;
 	// Exp e;
 	public Type visit(MethodDecl n) {
+		// #TODO
 		n.t.accept(this);
 		n.i.accept(this);
 		for (int i = 0; i < n.fl.size(); i++) {
@@ -127,30 +133,36 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	// Type t;
 	// Identifier i;
 	public Type visit(Formal n) {
+		// #TODO
 		n.t.accept(this);
 		n.i.accept(this);
 		return null;
 	}
 
 	public Type visit(IntArrayType n) {
+		// #TODO
 		return null;
 	}
 
 	public Type visit(BooleanType n) {
+		// #TODO
 		return null;
 	}
 
 	public Type visit(IntegerType n) {
+		// #TODO
 		return null;
 	}
 
 	// String s;
 	public Type visit(IdentifierType n) {
+		// #TODO
 		return null;
 	}
 
 	// StatementList sl;
 	public Type visit(Block n) {
+		// #TODO
 		for (int i = 0; i < n.sl.size(); i++) {
 			n.sl.elementAt(i).accept(this);
 		}
@@ -186,6 +198,7 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 
 	// Exp e;
 	public Type visit(Print n) {
+		// #TODO
 		n.e.accept(this);
 		return null;
 	}
@@ -193,6 +206,7 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	// Identifier i;
 	// Exp e;
 	public Type visit(Assign n) {
+		// #TODO
 		n.i.accept(this);
 		n.e.accept(this);
 		return null;
@@ -201,6 +215,7 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	// Identifier i;
 	// Exp e1,e2;
 	public Type visit(ArrayAssign n) {
+		// #TODO
 		n.i.accept(this);
 		n.e1.accept(this);
 		n.e2.accept(this);
@@ -269,6 +284,7 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 
 	// Exp e1,e2;
 	public Type visit(ArrayLookup n) {
+		// #TODO
 		n.e1.accept(this);
 		n.e2.accept(this);
 		return null;
@@ -289,6 +305,7 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	// Identifier i;
 	// ExpList el;
 	public Type visit(Call n) {
+		// #TODO
 		n.e.accept(this);
 		n.i.accept(this);
 		for (int i = 0; i < n.el.size(); i++) {
@@ -312,21 +329,25 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 
 	// String s;
 	public Type visit(IdentifierExp n) {
+		// #TODO
 		return null;
 	}
 
 	public Type visit(This n) {
+		// #TODO
 		return null;
 	}
 
 	// Exp e;
 	public Type visit(NewArray n) {
+		// #TODO
 		n.e.accept(this);
 		return null;
 	}
 
 	// Identifier i;
 	public Type visit(NewObject n) {
+		// #TODO
 		return null;
 	}
 
@@ -343,6 +364,7 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 
 	// String s;
 	public Type visit(Identifier n) {
+		// #TODO
 		return null;
 	}
 }
