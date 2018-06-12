@@ -162,7 +162,6 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 
 	// StatementList sl;
 	public Type visit(Block n) {
-		// #TODO
 		for (int i = 0; i < n.sl.size(); i++) {
 			n.sl.elementAt(i).accept(this);
 		}
@@ -198,7 +197,6 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 
 	// Exp e;
 	public Type visit(Print n) {
-		// #TODO
 		n.e.accept(this);
 		return null;
 	}
@@ -206,7 +204,6 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	// Identifier i;
 	// Exp e;
 	public Type visit(Assign n) {
-		// #TODO
 		n.i.accept(this);
 		n.e.accept(this);
 		return null;
@@ -215,10 +212,14 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	// Identifier i;
 	// Exp e1,e2;
 	public Type visit(ArrayAssign n) {
-		// #TODO
 		n.i.accept(this);
-		n.e1.accept(this);
-		n.e2.accept(this);
+		Type exp1 = n.e1.accept(this);
+		Type exp2 = n.e2.accept(this);
+		Type i = new IntegerType();
+		if (!(this.symbolTable.compareTypes(exp1, i) && this.symbolTable.compareTypes(exp2, i))) {
+			System.err.println("Erro: tipo inteiro não encontrado");
+			System.exit(0);
+		}
 		return null;
 	}
 
@@ -349,9 +350,13 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 
 	// Exp e;
 	public Type visit(NewArray n) {
-		// #TODO
-		n.e.accept(this);
-		return null;
+		Type e = n.e.accept(this);
+		Type i = new IntegerType();
+		if(! this.symbolTable.compareTypes(e, i)) {
+			System.err.println("Erro: tipo inteiro não encontrado");
+			System.exit(0);
+		}
+		return new IntArrayType();
 	}
 
 	// Identifier i;
@@ -373,7 +378,6 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 
 	// String s;
 	public Type visit(Identifier n) {
-		// #TODO
-		return null;
+		return new IdentifierType();
 	}
 }
