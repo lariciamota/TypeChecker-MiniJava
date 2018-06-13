@@ -279,7 +279,7 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	// Exp e1,e2;
 	public Type visit(ArrayLookup n) {
 		Type t = n.e1.accept(this);
-		Type id = new IdentifierType();
+		Type id = new IdentifierType("ex");
 		if (!this.symbolTable.compareTypes(t,id)) {
 			System.err.println("Erro: tipo identificador não encontrado");
 			System.exit(0);
@@ -371,6 +371,6 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 
 	// String s;
 	public Type visit(Identifier n) {
-		return new IdentifierType();
+		return new IdentifierType(n.s);
 	}
 }
