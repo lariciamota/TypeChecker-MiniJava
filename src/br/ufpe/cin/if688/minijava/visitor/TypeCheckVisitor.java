@@ -133,24 +133,20 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	}
 
 	public Type visit(IntArrayType n) {
-		// #TODO
-		return null;
+		return n;
 	}
 
 	public Type visit(BooleanType n) {
-		// #TODO
-		return null;
+		return n;
 	}
 
 	public Type visit(IntegerType n) {
-		// #TODO
-		return null;
+		return n;
 	}
 
 	// String s;
 	public Type visit(IdentifierType n) {
-		// #TODO
-		return null;
+		return n;
 	}
 
 	// StatementList sl;
@@ -209,7 +205,7 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 		Type exp1 = n.e1.accept(this);
 		Type exp2 = n.e2.accept(this);
 		Type i = new IntegerType();
-		if (!(this.symbolTable.compareTypes(exp1, i) && this.symbolTable.compareTypes(exp2, i))) {
+		if (!(this.symbolTable.compareTypes(exp1, i)|| this.symbolTable.compareTypes(exp2, i))) {
 			System.err.println("Erro: tipo inteiro não encontrado");
 			System.exit(0);
 		}
@@ -279,9 +275,9 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	// Exp e1,e2;
 	public Type visit(ArrayLookup n) {
 		Type t = n.e1.accept(this);
-		Type id = new IdentifierType("ex");
-		if (!this.symbolTable.compareTypes(t,id)) {
-			System.err.println("Erro: tipo identificador não encontrado");
+		Type ia = new IntArrayType();
+		if (!this.symbolTable.compareTypes(t,ia)) {
+			System.err.println("Erro: tipo array não encontrado");
 			System.exit(0);
 		}
 		Type ty = n.e2.accept(this);
@@ -354,8 +350,7 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 
 	// Identifier i;
 	public Type visit(NewObject n) {
-		// #TODO
-		return null;
+		return n.i.accept(this);
 	}
 
 	// Exp e;
