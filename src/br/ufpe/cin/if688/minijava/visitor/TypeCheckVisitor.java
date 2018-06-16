@@ -43,6 +43,7 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 
 	private SymbolTable symbolTable;
 	private Class currClass;
+	private Class parentClass;
 	private Method currMethod;
 
 
@@ -94,17 +95,20 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	// VarDeclList vl;
 	// MethodDeclList ml;
 	public Type visit(ClassDeclExtends n) {
-		currClass = symbolTable.getClass(n.j.toString());
-		n.j.accept(this);
-		
 		currClass = symbolTable.getClass(n.i.toString());
+		parentClass = symbolTable.getClass(n.j.toString());		
 		n.i.accept(this);
+		n.j.accept(this);
 		
 		for (int i = 0; i < n.vl.size(); i++) {
 			n.vl.elementAt(i).accept(this);
 		}
 		for (int i = 0; i < n.ml.size(); i++) {
-			currMethod = currClass.getMethod(n.ml.elementAt(i).toString());
+			if(currClass.containsMethod(n.ml.elementAt(i).toString())){
+				currMethod = currClass.getMethod(n.ml.elementAt(i).toString());
+			} else {
+				currMethod = parentClass.getMethod(n.ml.elementAt(i).toString());
+			}
 			n.ml.elementAt(i).accept(this);
 		}
 		return null;
@@ -113,9 +117,9 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	// Type t;
 	// Identifier i;
 	public Type visit(VarDecl n) {
-		n.t.accept(this);
+		Type t = n.t.accept(this);
 		n.i.accept(this);
-		return null;
+		return t;
 	}
 
 	// Type t;
@@ -125,7 +129,8 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	// StatementList sl;
 	// Exp e;
 	public Type visit(MethodDecl n) {
-		n.t.accept(this);
+		currMethod = currClass.getMethod(n.i.toString());
+		Type t = n.t.accept(this);
 		n.i.accept(this);
 		for (int i = 0; i < n.fl.size(); i++) {
 			n.fl.elementAt(i).accept(this);
@@ -137,15 +142,15 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 			n.sl.elementAt(i).accept(this);
 		}
 		n.e.accept(this);
-		return null;
+		return t;
 	}
 
 	// Type t;
 	// Identifier i;
 	public Type visit(Formal n) {
-		n.t.accept(this);
+		Type t = n.t.accept(this);
 		n.i.accept(this);
-		return null;
+		return t;
 	}
 
 	public Type visit(IntArrayType n) {
@@ -197,7 +202,7 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 			System.exit(0);
 		}
 		n.s.accept(this);
-		return b;
+		return null;
 	}
 
 	// Exp e;

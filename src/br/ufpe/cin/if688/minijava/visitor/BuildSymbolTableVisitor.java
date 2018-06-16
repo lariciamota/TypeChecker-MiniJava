@@ -41,9 +41,11 @@ import br.ufpe.cin.if688.minijava.symboltable.SymbolTable;
 public class BuildSymbolTableVisitor implements IVisitor<Void> {
 
 	SymbolTable symbolTable;
+	private boolean isMethod; 
 
 	public BuildSymbolTableVisitor() {
 		symbolTable = new SymbolTable();
+		isMethod = false;
 	}
 
 	public SymbolTable getSymbolTable() {
@@ -95,7 +97,9 @@ public class BuildSymbolTableVisitor implements IVisitor<Void> {
 			n.vl.elementAt(i).accept(this);
 		}
 		for (int i = 0; i < n.ml.size(); i++) {
+			this.isMethod = true;
 			n.ml.elementAt(i).accept(this);
+			this.isMethod = false;
 		}
 		return null;
 	}
@@ -121,7 +125,9 @@ public class BuildSymbolTableVisitor implements IVisitor<Void> {
 			n.vl.elementAt(i).accept(this);
 		}
 		for (int i = 0; i < n.ml.size(); i++) {
+			this.isMethod = true;
 			n.ml.elementAt(i).accept(this);
+			this.isMethod = false;
 		}
 		return null;
 	}
@@ -130,9 +136,9 @@ public class BuildSymbolTableVisitor implements IVisitor<Void> {
 	// Identifier i;
 	public Void visit(VarDecl n) {
 		//add var checking if it is global or local
-		if(this.currClass.containsVar(n.i.toString())){
+		if(!this.isMethod && !this.currClass.containsVar(n.i.toString())){
 			this.currClass.addVar(n.i.toString(), n.t);
-		} else if(this.currMethod.containsVar(n.i.toString())){
+		} else if(this.isMethod && !this.currMethod.containsVar(n.i.toString())){
 			this.currMethod.addVar(n.i.toString(), n.t);
 		} else {
 			System.err.println("Variable already exists");
