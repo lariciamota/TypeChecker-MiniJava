@@ -44,7 +44,7 @@ public class Main {
 		);
 		
 		ClassDeclExtends B = new ClassDeclExtends(
-				new Identifier("B"), new Identifier("A"), 
+				new Identifier("B"), new Identifier("flag"), 
 				new VarDeclList(), new MethodDeclList()
 		);
 		

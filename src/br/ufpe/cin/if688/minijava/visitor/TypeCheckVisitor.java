@@ -53,7 +53,7 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	private boolean isParam;
 	
 
-	TypeCheckVisitor(SymbolTable st) {
+	public TypeCheckVisitor(SymbolTable st) {
 		symbolTable = st;
 	}
 
@@ -341,12 +341,16 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	// Identifier i;
 	// ExpList el;
 	public Type visit(Call n) {
-		Type t = this.symbolTable.getMethodType(n.i.toString(), n.e.);
+		Type t = this.symbolTable.getMethodType(n.i.toString(), n.e.toString());
+		setOne(false,false,false,true,false);
 		n.e.accept(this);
+		setOne(false,false, true, false, false);
 		n.i.accept(this);
+		setOne(false,false,false, false, true);
 		for (int i = 0; i < n.el.size(); i++) {
 			n.el.elementAt(i).accept(this);
 		}
+		setFalse();
 		return null;
 	}
 
