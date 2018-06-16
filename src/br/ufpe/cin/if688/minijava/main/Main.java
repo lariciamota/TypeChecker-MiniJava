@@ -14,7 +14,9 @@ import br.ufpe.cin.if688.minijava.ast.Print;
 import br.ufpe.cin.if688.minijava.ast.Program;
 import br.ufpe.cin.if688.minijava.ast.VarDecl;
 import br.ufpe.cin.if688.minijava.ast.VarDeclList;
+import br.ufpe.cin.if688.minijava.visitor.BuildSymbolTableVisitor;
 import br.ufpe.cin.if688.minijava.visitor.PrettyPrintVisitor;
+import br.ufpe.cin.if688.minijava.visitor.TypeCheckVisitor;
 
 public class Main {
 
@@ -61,6 +63,12 @@ public class Main {
 		cdl.addElement(C);
 
 		Program p = new Program(main, cdl);
+		
+		BuildSymbolTableVisitor bstv = new BuildSymbolTableVisitor();
+		bstv.visit(p);
+		
+		TypeCheckVisitor tcv = new TypeCheckVisitor(bstv.getSymbolTable());
+		tcv.visit(p);
 		
 		PrettyPrintVisitor ppv = new PrettyPrintVisitor();
 		ppv.visit(p);
