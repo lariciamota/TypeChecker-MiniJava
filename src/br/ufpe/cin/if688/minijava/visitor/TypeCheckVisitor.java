@@ -38,6 +38,7 @@ import br.ufpe.cin.if688.minijava.ast.While;
 import br.ufpe.cin.if688.minijava.symboltable.Class;
 import br.ufpe.cin.if688.minijava.symboltable.Method;
 import br.ufpe.cin.if688.minijava.symboltable.SymbolTable;
+import br.ufpe.cin.if688.minijava.symboltable.Variable;
 
 public class TypeCheckVisitor implements IVisitor<Type> {
 
@@ -45,7 +46,12 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	private Class currClass;
 	private Class parentClass;
 	private Method currMethod;
-
+	private boolean isLocal;
+	private boolean isGlobal;
+	private boolean isMethod;
+	private boolean isClass;
+	private boolean isParam;
+	
 
 	TypeCheckVisitor(SymbolTable st) {
 		symbolTable = st;
@@ -56,7 +62,9 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	public Type visit(Program n) {
 		n.m.accept(this);
 		for (int i = 0; i < n.cl.size(); i++) {
+			setOne(false, false, false, true, false);
 			n.cl.elementAt(i).accept(this);
+			setFalse();
 		}
 		return null;
 	}
@@ -66,9 +74,11 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	public Type visit(MainClass n) {
 		currClass = symbolTable.getClass(n.i1.toString());
 		currMethod = currClass.getMethod("Main");
-		
+		setOne(false, false, false, true, false);
 		n.i1.accept(this);
+		setOne(false, false, false, false, true);
 		n.i2.accept(this);
+		setFalse();
 		n.s.accept(this);
 		return null;
 	}
@@ -78,15 +88,18 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	// MethodDeclList ml;
 	public Type visit(ClassDeclSimple n) {
 		currClass = symbolTable.getClass(n.i.toString());
-		
+		setOne(false, false, false, true, false);
 		n.i.accept(this);
+		setOne(false, true, false, false, false);
 		for (int i = 0; i < n.vl.size(); i++) {
 			n.vl.elementAt(i).accept(this);
 		}
+		setOne(false, false, true, false, false);
 		for (int i = 0; i < n.ml.size(); i++) {
 			currMethod = currClass.getMethod(n.ml.elementAt(i).toString());
 			n.ml.elementAt(i).accept(this);
 		}
+		setFalse();
 		return null;
 	}
 
@@ -96,13 +109,15 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	// MethodDeclList ml;
 	public Type visit(ClassDeclExtends n) {
 		currClass = symbolTable.getClass(n.i.toString());
-		parentClass = symbolTable.getClass(n.j.toString());		
+		parentClass = symbolTable.getClass(n.j.toString());	
+		setOne(false, false, false, true, false);
 		n.i.accept(this);
 		n.j.accept(this);
-		
+		setOne(false, true, false, false, false);
 		for (int i = 0; i < n.vl.size(); i++) {
 			n.vl.elementAt(i).accept(this);
 		}
+		setOne(false, false, true, false, false);
 		for (int i = 0; i < n.ml.size(); i++) {
 			if(currClass.containsMethod(n.ml.elementAt(i).toString())){
 				currMethod = currClass.getMethod(n.ml.elementAt(i).toString());
@@ -111,6 +126,7 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 			}
 			n.ml.elementAt(i).accept(this);
 		}
+		setFalse();
 		return null;
 	}
 
@@ -325,7 +341,7 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	// Identifier i;
 	// ExpList el;
 	public Type visit(Call n) {
-		// #TODO
+		Type t = this.symbolTable.getMethodType(n.i.toString(), n.e.);
 		n.e.accept(this);
 		n.i.accept(this);
 		for (int i = 0; i < n.el.size(); i++) {
@@ -349,13 +365,28 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 
 	// String s;
 	public Type visit(IdentifierExp n) {
-		// #TODO
+		String id = n.s;
+		//var global (var na classe)
+		//var local (var no metodo)
+		//classe
+		//metodo
+		
+		if(this.isLocal){
+			return currMethod.getVar(id).type();
+		} else if(this.isGlobal){
+			return currClass.getVar(id).type();
+		} else if(this.isMethod){
+			return currMethod.type();
+		} else if(this.isClass){
+			return currClass.type();
+		} else if(this.isParam){
+			return currMethod.getParam(id).type();
+		}
 		return null;
 	}
 
 	public Type visit(This n) {
-		// #TODO
-		return null;
+		return currClass.type();
 	}
 
 	// Exp e;
@@ -387,6 +418,21 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 
 	// String s;
 	public Type visit(Identifier n) {
-		return new IdentifierType(n.s);
+		return null;
+	}
+	public void setOne(boolean isL, boolean isG, boolean isM, boolean isC, boolean isP){
+		this.isLocal = isL;
+		this.isGlobal = isG;
+		this.isMethod = isM;
+		this.isClass = isC;
+		this.isParam = isP;
+	}
+	 
+	public void setFalse(){
+		this.isLocal = false;
+		this.isGlobal = false;
+		this.isMethod = false;
+		this.isClass = false;
+		this.isParam = false;
 	}
 }
