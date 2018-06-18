@@ -110,7 +110,11 @@ public class BuildSymbolTableVisitor implements IVisitor<Void> {
 	// MethodDeclList ml;
 	public Void visit(ClassDeclExtends n) {
 		//get class parent (extends) 
-		this.currClass = symbolTable.getClass(n.j.toString());
+		if(symbolTable.containsClass(n.j.toString())){
+			this.currClass = symbolTable.getClass(n.j.toString());
+		} else {
+			n.j.accept(this);
+		}
 		
 		//add class checking if it already exists
 		if(symbolTable.containsClass(n.i.toString())){

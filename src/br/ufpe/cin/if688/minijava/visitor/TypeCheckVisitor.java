@@ -369,24 +369,7 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 
 	// String s;
 	public Type visit(IdentifierExp n) {
-		String id = n.s;
-		//var global (var na classe)
-		//var local (var no metodo)
-		//classe
-		//metodo
-		
-		if(this.isLocal){
-			return currMethod.getVar(id).type();
-		} else if(this.isGlobal){
-			return currClass.getVar(id).type();
-		} else if(this.isMethod){
-			return currMethod.type();
-		} else if(this.isClass){
-			return currClass.type();
-		} else if(this.isParam){
-			return currMethod.getParam(id).type();
-		}
-		return null;
+		return new IdentifierType(n.s);
 	}
 
 	public Type visit(This n) {
@@ -422,6 +405,26 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 
 	// String s;
 	public Type visit(Identifier n) {
+		String id = n.s;
+		//var global (var na classe)
+		//var local (var no metodo)
+		//classe
+		//metodo
+		
+		if(this.isLocal){
+			return currMethod.getVar(id).type();
+		} else if(this.isGlobal){
+			return currClass.getVar(id).type();
+		} else if(this.isMethod){
+			return currMethod.type();
+		} else if(this.isClass){
+			return currClass.type();
+		} else if(this.isParam){
+			return currMethod.getParam(id).type();
+		} else {
+			System.err.println("Identificador nao compativel");
+			System.exit(0);
+		}
 		return null;
 	}
 	public void setOne(boolean isL, boolean isG, boolean isM, boolean isC, boolean isP){
