@@ -228,8 +228,12 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	// Identifier i;
 	// Exp e;
 	public Type visit(Assign n) {
-		n.i.accept(this);
-		n.e.accept(this);
+		Type ti = n.i.accept(this);
+		Type te = n.e.accept(this);
+		if(!this.symbolTable.compareTypes(ti, te)) {
+			System.err.println("Erro: tipos incompatíveis");
+			System.exit(0);
+		}
 		return null;
 	}
 
@@ -339,18 +343,44 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	// Identifier i;
 	// ExpList el;
 	public Type visit(Call n) {
-		Type t = this.symbolTable.getMethodType(n.i.toString(), n.e.toString());
-		this.isVar = true;
-		n.e.accept(this);
-		this.isVar = false;
-		this.isMethod = true;
-		n.i.accept(this);
-		this.isMethod = false;
-		this.isVar = true;
-		for (int i = 0; i < n.el.size(); i++) {
-			n.el.elementAt(i).accept(this);
+		Type tvar = n.e.accept(this);
+		if(tvar instanceof IdentifierType) {
+			Class c = this.symbolTable.getClass(((IdentifierType) tvar).toString());
+			Method m = this.symbolTable.getMethod(n.i.toString(), c.getId());
+			Class cAux = this.currClass;
+			this.currClass = c;
+			this.isMethod = true;
+			Type tmet = n.i.accept(this);
+			this.isMethod = false;
+			this.currClass = cAux;
+			boolean hasMethod = c.containsMethod(n.i.s);
+			if(!hasMethod) {
+				System.err.println("Erro: método não existente na classe");
+				System.exit(0);
+			}
+			int index = 0;
+			while(index < n.el.size()) {
+				Type parC = n.el.elementAt(index).accept(this);
+				Type parM = m.getParamAt(index).type();
+				if(m.getParamAt(index) == null) {
+					System.err.println("Erro: método possui menos parâmetros do que o passado");
+					System.exit(0);
+				}
+				if(! this.symbolTable.compareTypes(parC, parM)) {
+					System.err.println("Erro: tipo do parâmetro passado diferente do necessário");
+					System.exit(0);
+				}
+				index++;
+			}
+			if(! (m.getParamAt(index) == null)) {
+				System.err.println("Erro: método possui mais parâmetros do que o passado");
+				System.exit(0);
+			}
+			return tmet;
+		} else {
+			System.err.println("Erro: identificador não encontrado");
+			System.exit(0);
 		}
-		this.isVar = false;
 		return null;
 	}
 
