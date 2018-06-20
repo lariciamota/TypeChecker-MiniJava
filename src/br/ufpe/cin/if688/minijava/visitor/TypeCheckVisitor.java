@@ -128,6 +128,7 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	// Type t;
 	// Identifier i;
 	public Type visit(VarDecl n) {
+		this.isMethod = false;
 		Type t = n.t.accept(this);
 		n.i.accept(this);
 		return t;
@@ -441,7 +442,6 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 		} else if (this.isMethod) {
 			return this.symbolTable.getMethodType(n.s, this.currClass.getId());
 		} else {
-			System.out.println("entrando no call");
 			Class c = this.symbolTable.getClass(n.toString());
 			if(c == null) {
 				System.exit(0);

@@ -184,7 +184,6 @@ public class BuildSymbolTableVisitor implements IVisitor<Void> {
 		}	
 		n.t.accept(this);
 		n.i.accept(this);
-		this.isMethod = false;
 		for (int i = 0; i < n.fl.size(); i++) {
 			this.currMethod.addParam(n.fl.elementAt(i).i.toString(), n.fl.elementAt(i).t);
 			n.fl.elementAt(i).accept(this);
