@@ -69,8 +69,8 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	// Identifier i1,i2;
 	// Statement s;
 	public Type visit(MainClass n) {
-		currClass = symbolTable.getClass(n.i1.toString());
-		currMethod = currClass.getMethod("Main");
+		this.currClass = this.symbolTable.getClass(n.i1.s);
+		this.currMethod = this.symbolTable.getMethod("Main", this.currClass.getId());
 		n.i1.accept(this);
 		this.isVar = true;
 		n.i2.accept(this);

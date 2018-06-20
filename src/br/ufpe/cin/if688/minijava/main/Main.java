@@ -26,10 +26,12 @@ public class Main {
 		
 		Program prog = (Program) new MyVisitor().visit(new AntlrParser(token).goal());
 
-		SymbolTable st = new BuildSymbolTableVisitor().getSymbolTable();
+		BuildSymbolTableVisitor bst = new BuildSymbolTableVisitor();
+		bst.visit(prog);
+		SymbolTable st = bst.getSymbolTable();
 		
-		TypeCheckVisitor tcv = new TypeCheckVisitor(st);
-		tcv.visit(prog);
+		TypeCheckVisitor tc = new TypeCheckVisitor(st);
+		tc.visit(prog);
 		
 	}
 

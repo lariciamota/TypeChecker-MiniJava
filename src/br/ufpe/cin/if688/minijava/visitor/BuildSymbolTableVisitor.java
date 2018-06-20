@@ -69,12 +69,12 @@ public class BuildSymbolTableVisitor implements IVisitor<Void> {
 	// Statement s;
 	public Void visit(MainClass n) {
 		//add class using id1 -> currClass
-		symbolTable.addClass(n.i1.toString(), null);
-		this.currClass = symbolTable.getClass(n.i1.toString());
+		this.symbolTable.addClass(n.i1.toString(), null);
+		this.currClass = this.symbolTable.getClass(n.i1.toString());
 		//add method using id2 as param -> currMethod
-		currClass.addMethod("Main", null);
-		this.currMethod = currClass.getMethod("Main");
-		currMethod.addParam(n.i2.toString(), new IntArrayType());
+		this.currClass.addMethod("Main", null);
+		this.currMethod = this.currClass.getMethod("Main");
+		this.currMethod.addParam(n.i2.toString(), new IntArrayType());
 		n.i1.accept(this);
 		n.i2.accept(this);
 		n.s.accept(this);
