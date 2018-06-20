@@ -74,7 +74,6 @@ public class BuildSymbolTableVisitor implements IVisitor<Void> {
 		//add method using id2 as param -> currMethod
 		this.currClass.addMethod("Main", null);
 		this.currMethod = this.currClass.getMethod("Main");
-		System.out.println(this.currMethod.getId());
 		this.currMethod.addParam(n.i2.toString(), new IntArrayType());
 		n.i1.accept(this);
 		n.i2.accept(this);
