@@ -38,7 +38,6 @@ import br.ufpe.cin.if688.minijava.ast.While;
 import br.ufpe.cin.if688.minijava.symboltable.Class;
 import br.ufpe.cin.if688.minijava.symboltable.Method;
 import br.ufpe.cin.if688.minijava.symboltable.SymbolTable;
-import br.ufpe.cin.if688.minijava.symboltable.Variable;
 
 public class TypeCheckVisitor implements IVisitor<Type> {
 
@@ -83,7 +82,7 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	// VarDeclList vl;
 	// MethodDeclList ml;
 	public Type visit(ClassDeclSimple n) {
-		currClass = symbolTable.getClass(n.i.toString());
+		this.currClass = this.symbolTable.getClass(n.i.toString());
 		n.i.accept(this);
 		this.isVar = true;
 		for (int i = 0; i < n.vl.size(); i++) {
@@ -92,7 +91,7 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 		this.isVar = false;
 		this.isMethod = true;
 		for (int i = 0; i < n.ml.size(); i++) {
-			currMethod = currClass.getMethod(n.ml.elementAt(i).toString());
+			this.currMethod = this.currClass.getMethod(n.ml.elementAt(i).toString());
 			n.ml.elementAt(i).accept(this);
 		}
 		this.isMethod = false;
@@ -104,8 +103,8 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	// VarDeclList vl;
 	// MethodDeclList ml;
 	public Type visit(ClassDeclExtends n) {
-		currClass = symbolTable.getClass(n.i.toString());
-		parentClass = symbolTable.getClass(n.j.toString());	
+		this.currClass = this.symbolTable.getClass(n.i.toString());
+		this.parentClass = this.symbolTable.getClass(n.j.toString());	
 		n.i.accept(this);
 		n.j.accept(this);
 		this.isVar = true;
@@ -115,10 +114,10 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 		this.isVar = false;
 		this.isMethod = true;
 		for (int i = 0; i < n.ml.size(); i++) {
-			if(currClass.containsMethod(n.ml.elementAt(i).toString())){
-				currMethod = currClass.getMethod(n.ml.elementAt(i).toString());
+			if(this.currClass.containsMethod(n.ml.elementAt(i).toString())){
+				this.currMethod = this.currClass.getMethod(n.ml.elementAt(i).toString());
 			} else {
-				currMethod = parentClass.getMethod(n.ml.elementAt(i).toString());
+				this.currMethod = this.parentClass.getMethod(n.ml.elementAt(i).toString());
 			}
 			n.ml.elementAt(i).accept(this);
 		}
@@ -141,7 +140,7 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	// StatementList sl;
 	// Exp e;
 	public Type visit(MethodDecl n) {
-		currMethod = currClass.getMethod(n.i.toString());
+		this.currMethod = this.currClass.getMethod(n.i.toString());
 		Type t = n.t.accept(this);
 		n.i.accept(this);
 		this.isVar = true;

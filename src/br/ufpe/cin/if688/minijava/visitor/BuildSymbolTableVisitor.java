@@ -41,11 +41,9 @@ import br.ufpe.cin.if688.minijava.symboltable.SymbolTable;
 public class BuildSymbolTableVisitor implements IVisitor<Void> {
 
 	SymbolTable symbolTable;
-	private boolean isMethod; 
 
 	public BuildSymbolTableVisitor() {
 		symbolTable = new SymbolTable();
-		isMethod = false;
 	}
 
 	public SymbolTable getSymbolTable() {
@@ -78,6 +76,8 @@ public class BuildSymbolTableVisitor implements IVisitor<Void> {
 		n.i1.accept(this);
 		n.i2.accept(this);
 		n.s.accept(this);
+		this.currClass = null;
+		this.currMethod = null;
 		return null;
 	}
 
@@ -86,21 +86,20 @@ public class BuildSymbolTableVisitor implements IVisitor<Void> {
 	// MethodDeclList ml;
 	public Void visit(ClassDeclSimple n) {
 		//add class checking if it already exists
-		if(symbolTable.containsClass(n.i.toString())){
+		if(this.symbolTable.containsClass(n.i.toString())){
 			System.err.println("Class already exists");
 			System.exit(0);
 		}
-		symbolTable.addClass(n.i.toString(), null);
-		this.currClass = symbolTable.getClass(n.i.toString());
+		this.symbolTable.addClass(n.i.toString(), null);
+		this.currClass = this.symbolTable.getClass(n.i.toString());
 		n.i.accept(this);
 		for (int i = 0; i < n.vl.size(); i++) {
 			n.vl.elementAt(i).accept(this);
 		}
 		for (int i = 0; i < n.ml.size(); i++) {
-			this.isMethod = true;
 			n.ml.elementAt(i).accept(this);
-			this.isMethod = false;
 		}
+		this.currClass = null;
 		return null;
 	}
 
@@ -110,29 +109,28 @@ public class BuildSymbolTableVisitor implements IVisitor<Void> {
 	// MethodDeclList ml;
 	public Void visit(ClassDeclExtends n) {
 		//get class parent (extends) 
-		if(symbolTable.containsClass(n.j.toString())){
-			this.currClass = symbolTable.getClass(n.j.toString());
+		if(this.symbolTable.containsClass(n.j.toString())){
+			this.currClass = this.symbolTable.getClass(n.j.toString());
 		} else {
 			n.j.accept(this);
 		}
 		
 		//add class checking if it already exists
-		if(symbolTable.containsClass(n.i.toString())){
+		if(this.symbolTable.containsClass(n.i.toString())){
 			System.err.println("Class already exists");
 			System.exit(0);
 		}
-		symbolTable.addClass(n.i.toString(), currClass.getId());
-		this.currClass = symbolTable.getClass(n.i.toString());
+		this.symbolTable.addClass(n.i.toString(), this.currClass.getId());
+		this.currClass = this.symbolTable.getClass(n.i.toString());
 		n.i.accept(this);
 		n.j.accept(this);
 		for (int i = 0; i < n.vl.size(); i++) {
 			n.vl.elementAt(i).accept(this);
 		}
 		for (int i = 0; i < n.ml.size(); i++) {
-			this.isMethod = true;
 			n.ml.elementAt(i).accept(this);
-			this.isMethod = false;
 		}
+		this.currClass = null;
 		return null;
 	}
 
@@ -140,16 +138,25 @@ public class BuildSymbolTableVisitor implements IVisitor<Void> {
 	// Identifier i;
 	public Void visit(VarDecl n) {
 		//add var checking if it is global or local
-		if(!this.isMethod && !this.currClass.containsVar(n.i.toString())){
-			this.currClass.addVar(n.i.toString(), n.t);
-		} else if(this.isMethod && !this.currMethod.containsVar(n.i.toString())){
-			this.currMethod.addVar(n.i.toString(), n.t);
+		if(this.currMethod == null){
+			if(this.currClass.containsVar(n.i.toString())){
+				System.err.println("Variable " + n.i.s + " already exists in class " + this.currClass.getId());
+				System.exit(0);
+			} else {
+				this.currClass.addVar(n.i.toString(), n.t);
+			}
 		} else {
-			System.err.println("Variable already exists");
-			System.exit(0);
+			if(this.currMethod.containsVar(n.i.toString())){
+				System.err.println("Variable " + n.i.s + " already exists in method " + this.currMethod.getId());
+				System.exit(0);
+			} else {
+				this.currMethod.addVar(n.i.toString(), n.t);
+			}
 		}
+		
 		n.t.accept(this);
 		n.i.accept(this);
+		
 		return null;
 	}
 
@@ -161,11 +168,13 @@ public class BuildSymbolTableVisitor implements IVisitor<Void> {
 	// Exp e;
 	public Void visit(MethodDecl n) {
 		if(this.currClass.containsMethod(n.i.toString())){
-			System.err.println("Method already exists");
+			System.err.println("Method " + n.i.toString() + "already exists in class" + this.currClass.getId());
 			System.exit(0);
 		}
-		this.currClass.addMethod(n.i.toString(), n.t);
-		
+		boolean ok = this.currClass.addMethod(n.i.toString(), n.t);
+//		if(ok){
+//			this.currMethod = this.currClass.getMethod(n.i.toString());
+//		}
 		n.t.accept(this);
 		n.i.accept(this);
 		for (int i = 0; i < n.fl.size(); i++) {
@@ -178,6 +187,7 @@ public class BuildSymbolTableVisitor implements IVisitor<Void> {
 			n.sl.elementAt(i).accept(this);
 		}
 		n.e.accept(this);
+		this.currMethod = null;
 		return null;
 	}
 
