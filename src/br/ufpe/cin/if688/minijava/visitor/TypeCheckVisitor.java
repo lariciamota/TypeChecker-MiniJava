@@ -84,17 +84,17 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	public Type visit(ClassDeclSimple n) {
 		this.currClass = this.symbolTable.getClass(n.i.toString());
 		n.i.accept(this);
-		this.isVar = true;
+		//this.isVar = true;
 		for (int i = 0; i < n.vl.size(); i++) {
 			n.vl.elementAt(i).accept(this);
 		}
-		this.isVar = false;
-		this.isMethod = true;
+		//this.isVar = false;
+		//this.isMethod = true;
 		for (int i = 0; i < n.ml.size(); i++) {
 			this.currMethod = this.currClass.getMethod(n.ml.elementAt(i).toString());
 			n.ml.elementAt(i).accept(this);
 		}
-		this.isMethod = false;
+		//this.isMethod = false;
 		return null;
 	}
 
@@ -107,12 +107,12 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 		this.parentClass = this.symbolTable.getClass(n.j.s);	
 		n.i.accept(this);
 		n.j.accept(this);
-		this.isVar = true;
+		//this.isVar = true;
 		for (int i = 0; i < n.vl.size(); i++) {
 			n.vl.elementAt(i).accept(this);
 		}
-		this.isVar = false;
-		this.isMethod = true;
+		//this.isVar = false;
+		//this.isMethod = true;
 		for (int i = 0; i < n.ml.size(); i++) {
 			if(this.currClass.containsMethod(n.ml.elementAt(i).toString())){
 				this.currMethod = this.currClass.getMethod(n.ml.elementAt(i).toString());
@@ -121,16 +121,17 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 			}
 			n.ml.elementAt(i).accept(this);
 		}
-		this.isMethod = false;
+		//this.isMethod = false;
 		return null;
 	}
 
 	// Type t;
 	// Identifier i;
 	public Type visit(VarDecl n) {
-		this.isMethod = false;
 		Type t = n.t.accept(this);
+		this.isVar = true;
 		n.i.accept(this);
+		this.isVar = false;
 		return t;
 	}
 
@@ -143,18 +144,20 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	public Type visit(MethodDecl n) {
 		this.currMethod = this.currClass.getMethod(n.i.toString());
 		Type t = n.t.accept(this);
+		this.isMethod = true;
 		n.i.accept(this);
-		this.isVar = true;
+		this.isMethod = false;
+		//this.isVar = true;
 		for (int i = 0; i < n.fl.size(); i++) {
 			n.fl.elementAt(i).accept(this);
 		}
 		for (int i = 0; i < n.vl.size(); i++) {
 			n.vl.elementAt(i).accept(this);
 		}
-		this.isVar = false;
 		for (int i = 0; i < n.sl.size(); i++) {
 			n.sl.elementAt(i).accept(this);
 		}
+		//this.isVar = false;
 		n.e.accept(this);
 		return t;
 	}
@@ -163,7 +166,9 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	// Identifier i;
 	public Type visit(Formal n) {
 		Type t = n.t.accept(this);
+		this.isVar = true;
 		n.i.accept(this);
+		this.isVar = false;
 		return t;
 	}
 
@@ -228,7 +233,9 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	// Identifier i;
 	// Exp e;
 	public Type visit(Assign n) {
+		this.isVar = true;
 		Type ti = n.i.accept(this);
+		this.isVar = false;
 		Type te = n.e.accept(this);
 		if(!this.symbolTable.compareTypes(ti, te)) {
 			System.err.println("Erro: tipos incompatíveis");
@@ -240,7 +247,9 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	// Identifier i;
 	// Exp e1,e2;
 	public Type visit(ArrayAssign n) {
+		this.isVar = true;
 		n.i.accept(this);
+		this.isVar = false;
 		Type exp1 = n.e1.accept(this);
 		Type exp2 = n.e2.accept(this);
 		Type i = new IntegerType();
@@ -444,6 +453,7 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 		} else {
 			Class c = this.symbolTable.getClass(n.toString());
 			if(c == null) {
+				System.err.println("variável nao encontrada");
 				System.exit(0);
 			}
 			return c.type();
