@@ -44,6 +44,7 @@ public class BuildSymbolTableVisitor implements IVisitor<Void> {
 
 	public BuildSymbolTableVisitor() {
 		symbolTable = new SymbolTable();
+		isMethod = false;
 	}
 
 	public SymbolTable getSymbolTable() {
@@ -52,6 +53,7 @@ public class BuildSymbolTableVisitor implements IVisitor<Void> {
 
 	private Class currClass;
 	private Method currMethod;
+	private boolean isMethod;
 
 	// MainClass m;
 	// ClassDeclList cl;
@@ -72,12 +74,13 @@ public class BuildSymbolTableVisitor implements IVisitor<Void> {
 		//add method using id2 as param -> currMethod
 		this.currClass.addMethod("Main", null);
 		this.currMethod = this.currClass.getMethod("Main");
+		System.out.println(this.currMethod.getId());
 		this.currMethod.addParam(n.i2.toString(), new IntArrayType());
 		n.i1.accept(this);
 		n.i2.accept(this);
 		n.s.accept(this);
-		this.currClass = null;
-		this.currMethod = null;
+		// this.currClass = null;
+		// this.currMethod = null;
 		return null;
 	}
 
@@ -96,10 +99,12 @@ public class BuildSymbolTableVisitor implements IVisitor<Void> {
 		for (int i = 0; i < n.vl.size(); i++) {
 			n.vl.elementAt(i).accept(this);
 		}
+		this.isMethod = true;
 		for (int i = 0; i < n.ml.size(); i++) {
 			n.ml.elementAt(i).accept(this);
 		}
-		this.currClass = null;
+		this.isMethod = false;
+		// this.currClass = null;
 		return null;
 	}
 
@@ -127,32 +132,35 @@ public class BuildSymbolTableVisitor implements IVisitor<Void> {
 		for (int i = 0; i < n.vl.size(); i++) {
 			n.vl.elementAt(i).accept(this);
 		}
+		this.isMethod = true;
 		for (int i = 0; i < n.ml.size(); i++) {
 			n.ml.elementAt(i).accept(this);
 		}
-		this.currClass = null;
+		this.isMethod = false;
+		// this.currClass = null;
 		return null;
 	}
 
 	// Type t;
 	// Identifier i;
 	public Void visit(VarDecl n) {
+		
 		//add var checking if it is global or local
-		if(this.currMethod == null){
-			if(this.currClass.containsVar(n.i.toString())){
-				System.err.println("Variable " + n.i.s + " already exists in class " + this.currClass.getId());
-				System.exit(0);
-			} else {
-				this.currClass.addVar(n.i.toString(), n.t);
-			}
-		} else {
+		if(isMethod) {
 			if(this.currMethod.containsVar(n.i.toString())){
-				System.err.println("Variable " + n.i.s + " already exists in method " + this.currMethod.getId());
+				System.err.println("Variable " + n.i.toString() + " already exists in method " + this.currMethod.getId());
 				System.exit(0);
 			} else {
 				this.currMethod.addVar(n.i.toString(), n.t);
 			}
-		}
+		} else {
+			if(this.currClass.containsVar(n.i.toString())){
+				System.err.println("Variable " + n.i.toString() + " already exists in class " + this.currClass.getId());
+				System.exit(0);
+			} else {
+				this.currClass.addVar(n.i.toString(), n.t);
+			}
+		} 
 		
 		n.t.accept(this);
 		n.i.accept(this);
@@ -170,14 +178,15 @@ public class BuildSymbolTableVisitor implements IVisitor<Void> {
 		if(this.currClass.containsMethod(n.i.toString())){
 			System.err.println("Method " + n.i.toString() + "already exists in class" + this.currClass.getId());
 			System.exit(0);
-		}
-		boolean ok = this.currClass.addMethod(n.i.toString(), n.t);
-//		if(ok){
-//			this.currMethod = this.currClass.getMethod(n.i.toString());
-//		}
+		} else {
+			this.currClass.addMethod(n.i.toString(), n.t);
+			this.currMethod = this.currClass.getMethod(n.i.toString());
+		}	
 		n.t.accept(this);
 		n.i.accept(this);
+		this.isMethod = false;
 		for (int i = 0; i < n.fl.size(); i++) {
+			this.currMethod.addParam(n.fl.elementAt(i).i.toString(), n.fl.elementAt(i).t);
 			n.fl.elementAt(i).accept(this);
 		}
 		for (int i = 0; i < n.vl.size(); i++) {
@@ -187,7 +196,7 @@ public class BuildSymbolTableVisitor implements IVisitor<Void> {
 			n.sl.elementAt(i).accept(this);
 		}
 		n.e.accept(this);
-		this.currMethod = null;
+		// this.currMethod = null;
 		return null;
 	}
 

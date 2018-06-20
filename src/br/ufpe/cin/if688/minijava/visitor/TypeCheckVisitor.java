@@ -104,7 +104,7 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	// MethodDeclList ml;
 	public Type visit(ClassDeclExtends n) {
 		this.currClass = this.symbolTable.getClass(n.i.toString());
-		this.parentClass = this.symbolTable.getClass(n.j.toString());	
+		this.parentClass = this.symbolTable.getClass(n.j.s);	
 		n.i.accept(this);
 		n.j.accept(this);
 		this.isVar = true;
@@ -344,7 +344,8 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	public Type visit(Call n) {
 		Type tvar = n.e.accept(this);
 		if(tvar instanceof IdentifierType) {
-			Class c = this.symbolTable.getClass(((IdentifierType) tvar).toString());
+			String className = ((IdentifierType) tvar).toString();
+			Class c = this.symbolTable.getClass(((IdentifierType) tvar).s);
 			Method m = this.symbolTable.getMethod(n.i.toString(), c.getId());
 			Class cAux = this.currClass;
 			this.currClass = c;
@@ -352,12 +353,13 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 			Type tmet = n.i.accept(this);
 			this.isMethod = false;
 			this.currClass = cAux;
-			boolean hasMethod = c.containsMethod(n.i.s);
+			boolean hasMethod = c.containsMethod(n.i.toString());
 			if(!hasMethod) {
 				System.err.println("Erro: método não existente na classe");
 				System.exit(0);
 			}
 			int index = 0;
+			
 			while(index < n.el.size()) {
 				Type parC = n.el.elementAt(index).accept(this);
 				Type parM = m.getParamAt(index).type();
@@ -439,9 +441,9 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 		} else if (this.isMethod) {
 			return this.symbolTable.getMethodType(n.s, this.currClass.getId());
 		} else {
+			System.out.println("entrando no call");
 			Class c = this.symbolTable.getClass(n.toString());
 			if(c == null) {
-				System.err.println("Classe não existente");
 				System.exit(0);
 			}
 			return c.type();
