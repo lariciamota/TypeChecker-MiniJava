@@ -28,10 +28,9 @@ public class Main {
 
 		SymbolTable st = new BuildSymbolTableVisitor().getSymbolTable();
 		
+		TypeCheckVisitor tcv = new TypeCheckVisitor(st);
+		tcv.visit(prog);
 		
-		
-		//PrettyPrintVisitor ppv = new PrettyPrintVisitor();
-		//ppv.visit(prog);
 	}
 
 }
