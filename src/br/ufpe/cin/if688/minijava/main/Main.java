@@ -19,7 +19,7 @@ public class Main {
 
 	public static void main(String[] args) throws IOException {
 		
-		InputStream stream = new FileInputStream("testes/QuickSort.java"); 
+		InputStream stream = new FileInputStream("testes/BinarySearch.java"); 
 		ANTLRInputStream input = new ANTLRInputStream(stream);
 		AntlrLexer lexer = new AntlrLexer(input);
 		CommonTokenStream token = new CommonTokenStream(lexer);
