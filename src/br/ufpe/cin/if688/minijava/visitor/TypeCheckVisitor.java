@@ -206,7 +206,7 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 		Type t = n.e.accept(this);
 		Type b = new BooleanType();
 		if (!this.symbolTable.compareTypes(t, b)) {
-			System.err.println("Erro: operando não booleano");
+			System.err.println("Erro IF: operando nÃ£o booleano");
 			System.exit(0);
 		}
 		n.s1.accept(this);
@@ -220,7 +220,7 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 		Type t = n.e.accept(this);
 		Type b = new BooleanType();
 		if (!this.symbolTable.compareTypes(t, b)) {
-			System.err.println("Erro: operando não booleano");
+			System.err.println("Erro WHILE: operando nÃ£o booleano");
 			System.exit(0);
 		}
 		n.s.accept(this);
@@ -241,7 +241,7 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 		this.isVar = false;
 		Type te = n.e.accept(this);
 		if(!this.symbolTable.compareTypes(ti, te)) {
-			System.err.println("Erro: tipos incompatíveis");
+			System.err.println("Erro: tipos incompativeis");
 			System.exit(0);
 		}
 		return null;
@@ -258,11 +258,11 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 		Type i = new IntegerType();
 		Type ia = new IntArrayType();
 		if(!this.symbolTable.compareTypes(ia, id)){
-			System.err.println("Erro: tipo intarray não encontrado");
+			System.err.println("Erro: tipo intarray nao encontrado");
 			System.exit(0);
 		}
 		if (!(this.symbolTable.compareTypes(exp1, i)|| this.symbolTable.compareTypes(exp2, i))) {
-			System.err.println("Erro: tipo inteiro não encontrado");
+			System.err.println("Erro: tipo inteiro nao encontrado");
 			System.exit(0);
 		}
 		return null;
@@ -274,7 +274,7 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 		Type t2 = n.e2.accept(this);
 		Type b = new BooleanType();
 		if (!(this.symbolTable.compareTypes(t1, b) && this.symbolTable.compareTypes(t2, b))) {
-			System.err.println("Erro: operando não booleano");
+			System.err.println("Erro AND: operando nÃ£o booleano");
 			System.exit(0);
 		}
 		return b;
@@ -286,7 +286,7 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 		Type t2 = n.e2.accept(this);
 		Type i = new IntegerType();
 		if (!(this.symbolTable.compareTypes(t1, i) && this.symbolTable.compareTypes(t2, i))) {	
-			System.err.println("Erro: operando não inteiro");
+			System.err.println("Erro: operando nÃ£o inteiro");
 			System.exit(0);
 		}
 		return new BooleanType();			
@@ -298,7 +298,7 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 		Type t2 = n.e2.accept(this);
 		Type i = new IntegerType();
 		if (!(this.symbolTable.compareTypes(t1, i) && this.symbolTable.compareTypes(t2, i))) {	
-			System.err.println("Erro: operando não inteiro");
+			System.err.println("Erro: operando nÃ£o inteiro");
 			System.exit(0);
 		}
 		return new IntegerType();	
@@ -310,7 +310,7 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 		Type t2 = n.e2.accept(this);
 		Type i = new IntegerType();
 		if (!(this.symbolTable.compareTypes(t1, i) && this.symbolTable.compareTypes(t2, i))) {	
-			System.err.println("Erro: operando não inteiro");
+			System.err.println("Erro: operando nÃ£o inteiro");
 			System.exit(0);
 		}
 		return new IntegerType();	
@@ -322,7 +322,7 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 		Type t2 = n.e2.accept(this);
 		Type i = new IntegerType();
 		if (!(this.symbolTable.compareTypes(t1, i) && this.symbolTable.compareTypes(t2, i))) {	
-			System.err.println("Erro: operando não inteiro");
+			System.err.println("Erro: operando nÃ£o inteiro");
 			System.exit(0);
 		}
 		return new IntegerType();	
@@ -333,13 +333,13 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 		Type t = n.e1.accept(this);
 		Type ia = new IntArrayType();
 		if (!this.symbolTable.compareTypes(t,ia)) {
-			System.err.println("Erro: tipo array não encontrado");
+			System.err.println("Erro: tipo array nÃ£o encontrado");
 			System.exit(0);
 		}
 		Type ty = n.e2.accept(this);
 		Type i = new IntegerType();
 		if (!this.symbolTable.compareTypes(ty,i)) {
-			System.err.println("Erro: tipo inteiro não encontrado");
+			System.err.println("Erro: tipo inteiro nÃ£o encontrado");
 			System.exit(0);
 		}
 		return new IntegerType();
@@ -350,10 +350,10 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 		Type t = n.e.accept(this);
 		Type i = new IntArrayType();
 		if (!this.symbolTable.compareTypes(t,i)) {
-			System.err.println("Erro: tipo intarray não encontrado ");
+			System.err.println("Erro: tipo intarray nÃ£o encontrado ");
 			System.exit(0);
 		}
-		return null;
+		return new IntegerType();
 	}
 
 	// Exp e;
@@ -373,7 +373,7 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 			this.currClass = cAux;
 			boolean hasMethod = c.containsMethod(n.i.toString());
 			if(!hasMethod) {
-				System.err.println("Erro: método não existente na classe");
+				System.err.println("Erro: mÃ©todo nÃ£o existente na classe");
 				System.exit(0);
 			}
 			int index = 0;
@@ -382,22 +382,22 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 				Type parC = n.el.elementAt(index).accept(this);
 				Type parM = m.getParamAt(index).type();
 				if(m.getParamAt(index) == null) {
-					System.err.println("Erro: método possui menos parâmetros do que o passado");
+					System.err.println("Erro: mÃ©todo possui menos parÃ¢metros do que o passado");
 					System.exit(0);
 				}
 				if(! this.symbolTable.compareTypes(parC, parM)) {
-					System.err.println("Erro: tipo do parâmetro passado diferente do necessário");
+					System.err.println("Erro: tipo do parÃ¢metro passado diferente do necessÃ¡rio");
 					System.exit(0);
 				}
 				index++;
 			}
 			if(! (m.getParamAt(index) == null)) {
-				System.err.println("Erro: método possui mais parâmetros do que o passado");
+				System.err.println("Erro: mÃ©todo possui mais parÃ¢metros do que o passado");
 				System.exit(0);
 			}
 			return tmet;
 		} else {
-			System.err.println("Erro: identificador não encontrado");
+			System.err.println("Erro: identificador nÃ£o encontrado");
 			System.exit(0);
 		}
 		return null;
@@ -418,6 +418,7 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 
 	// String s;
 	public Type visit(IdentifierExp n) {
+
 		return this.symbolTable.getVarType(this.currMethod, this.currClass, n.s);
 	}
 
@@ -430,7 +431,7 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 		Type e = n.e.accept(this);
 		Type i = new IntegerType();
 		if(! this.symbolTable.compareTypes(e, i)) {
-			System.err.println("Erro: tipo inteiro não encontrado");
+			System.err.println("Erro: tipo inteiro nÃ£o encontrado");
 			System.exit(0);
 		}
 		return new IntArrayType();
@@ -446,10 +447,10 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 		Type t = n.e.accept(this);
 		Type b = new BooleanType();
 		if(! this.symbolTable.compareTypes(t, b)) {
-			System.err.println("Erro: operando não booleano");
+			System.err.println("Erro NOT : operando nÃ£o booleano");
 			System.exit(0);
 		}
-		return null;
+		return b;
 	}
 
 	// String s;
@@ -461,7 +462,7 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 		} else {
 			Class c = this.symbolTable.getClass(n.toString());
 			if(c == null) {
-				System.err.println("variável nao encontrada");
+				System.err.println("variÃ¡vel nao encontrada");
 				System.exit(0);
 			}
 			return c.type();
