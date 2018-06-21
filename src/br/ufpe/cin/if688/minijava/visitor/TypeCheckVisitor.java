@@ -377,14 +377,15 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 				System.exit(0);
 			}
 			int index = 0;
-			
+			Type parC = null;
+			Type parM = null;
 			while(index < n.el.size()) {
-				Type parC = n.el.elementAt(index).accept(this);
-				Type parM = m.getParamAt(index).type();
+				parC = n.el.elementAt(index).accept(this);
 				if(m.getParamAt(index) == null) {
 					System.err.println("Erro: mÃ©todo possui menos parÃ¢metros do que o passado");
 					System.exit(0);
 				}
+				parM = m.getParamAt(index).type();
 				if(! this.symbolTable.compareTypes(parC, parM)) {
 					System.err.println("Erro: tipo do parÃ¢metro passado diferente do necessÃ¡rio");
 					System.exit(0);
