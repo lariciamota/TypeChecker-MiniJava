@@ -352,7 +352,6 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	public Type visit(Call n) {
 		Type tvar = n.e.accept(this);
 		if(tvar instanceof IdentifierType) {
-			String className = ((IdentifierType) tvar).toString();
 			Class c = this.symbolTable.getClass(((IdentifierType) tvar).s);
 			Method m = this.symbolTable.getMethod(n.i.toString(), c.getId());
 			Class cAux = this.currClass;
@@ -361,7 +360,14 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 			Type tmet = n.i.accept(this);
 			this.isMethod = false;
 			this.currClass = cAux;
-			boolean hasMethod = c.containsMethod(n.i.toString());
+			boolean hasMethod;
+			if(c.parent() != null){
+				Class parent = this.symbolTable.getClass(c.parent());
+				hasMethod = c.containsMethod(n.i.s) || parent.containsMethod(n.i.s);
+			} else {
+				hasMethod = c.containsMethod(n.i.s);
+			}
+			
 			if(!hasMethod) {
 				System.err.println("Error Call: method " + n.i.s + " not in class " + c.getId());
 				System.exit(0);
