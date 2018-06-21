@@ -162,6 +162,8 @@ public class MyVisitor implements AntlrVisitor<Object>{
 			if(ctx.getChildCount() == 1) {
 				if('0'<= text.charAt(0) && text.charAt(0) <= '9') {
 					return ctx.integer().accept(this);
+				} else if (ctx.getChild(0).getText().equals("this")) {
+					return new This();
 				} else {
 					return new IdentifierExp(ctx.getText());
 				}
@@ -202,8 +204,6 @@ public class MyVisitor implements AntlrVisitor<Object>{
 							}
 							return new Call(exp1, i, el);
 						}
-					default:
-						return new This();
 					}
 				}
 				
