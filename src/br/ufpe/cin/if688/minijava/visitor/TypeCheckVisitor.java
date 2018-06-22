@@ -68,7 +68,7 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	// Identifier i1,i2;
 	// Statement s;
 	public Type visit(MainClass n) {
-		this.currClass = this.symbolTable.getClass(n.i1.s);
+		this.currClass = this.symbolTable.getClass(n.i1.toString());
 		this.currMethod = this.symbolTable.getMethod("Main", this.currClass.getId());
 		n.i1.accept(this);
 		this.isVar = true;
@@ -100,7 +100,7 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	// MethodDeclList ml;
 	public Type visit(ClassDeclExtends n) {
 		this.currClass = this.symbolTable.getClass(n.i.toString());
-		this.parentClass = this.symbolTable.getClass(n.j.s);	
+		this.parentClass = this.symbolTable.getClass(n.j.s);
 		n.i.accept(this);
 		n.j.accept(this);
 		for (int i = 0; i < n.vl.size(); i++) {
