@@ -124,7 +124,7 @@ public class BuildSymbolTableVisitor implements IVisitor<Void> {
 			System.err.println("Class already exists");
 			System.exit(0);
 		}
-		this.symbolTable.addClass(n.i.toString(), this.currClass.getId());
+		this.symbolTable.addClass(n.i.toString(), n.j.toString());
 		this.currClass = this.symbolTable.getClass(n.i.toString());
 		n.i.accept(this);
 		n.j.accept(this);
