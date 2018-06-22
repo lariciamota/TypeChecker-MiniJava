@@ -382,7 +382,7 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 					System.exit(0);
 				}
 				parM = m.getParamAt(index).type();
-				if(! this.symbolTable.compareTypes(parC, parM)) {
+				if(! this.symbolTable.compareTypes(parM, parC)) {
 					System.err.println("Error Call: param type different than expected");
 					System.exit(0);
 				}
